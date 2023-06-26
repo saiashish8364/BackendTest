@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
-
+let timer;
 function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  async function fetchData() {
+  const [error, setError] = useState(null);
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
-      const response = await fetch("https://swapi.dev/api/films");
+      const response = await fetch("https://swapi.dev/api/film");
+      if (!response.ok) {
+        timer = setTimeout(() => {
+          console.log(Date.toString());
+          fetchData();
+        }, 5000);
+        throw new Error("Something Went Wrong ....Retrying");
+      }
       const data = await response.json();
+
       const movieData = data.results;
       const transform = movieData.map((obj) => {
         return {
@@ -24,10 +34,15 @@ function App() {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
+      setError(error.message);
       console.log(error);
     }
-  }
+  }, []);
 
+  function stopCalling() {
+    clearTimeout(timer);
+    setError(null);
+  }
   return (
     <React.Fragment>
       <section>
@@ -36,6 +51,8 @@ function App() {
       <section>
         <MoviesList movies={movies} />
         {isLoading && <h1 style={{ fontSize: "2.5rem" }}>Loading...</h1>}
+        {!isLoading && error && <h1>{error}</h1>}
+        <button onClick={stopCalling}>Cancel</button>
       </section>
     </React.Fragment>
   );
