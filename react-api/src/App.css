@@ -27,3 +27,20 @@ button:active {
   background-color: #460897;
   border-color: #460897;
 }
+form {
+  font-size: large;
+  font-weight: bold;
+  margin: 1rem auto;
+  width: 90%;
+  max-width: 40rem;
+  text-align: left;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+}
+input {
+  width: 80%;
+  height: 35px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}

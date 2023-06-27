@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import MoviesList from "./components/MoviesList";
 import "./App.css";
 let timer;
+let title, openingText, date;
 function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,8 +45,45 @@ function App() {
     clearTimeout(timer);
     setError(null);
   }
+  function titleChangeHandler(e) {
+    title = e.target.value;
+  }
+  function textChangeHandler(e) {
+    openingText = e.target.value;
+  }
+  function dateChangeHandler(e) {
+    date = e.target.value;
+  }
+  const submitHandler = (e) => {
+    e.preventDefault();
+    let newMovieObj = {
+      title: title,
+      openingText: openingText,
+      releaseDate: date,
+    };
+    console.log(newMovieObj);
+    document.getElementById("title").value = "";
+    document.getElementById("opening-text").value = "";
+    document.getElementById("date").value = "";
+  };
   return (
     <React.Fragment>
+      <form onSubmit={submitHandler}>
+        <label>Title</label>
+        <br />
+        <input type="text" id="title" onChange={titleChangeHandler} />
+        <br />
+        <label>Opening Text</label>
+        <br />
+        <input type="text" id="opening-text" onChange={textChangeHandler} />
+        <br />
+        <label>Release Date</label>
+        <br />
+        <input type="date" id="date" onChange={dateChangeHandler} />
+        <br />
+        <button type="submit">Add Movie</button>
+      </form>
+
       <section>
         <button onClick={fetchData}>Fetch Movies</button>
       </section>
