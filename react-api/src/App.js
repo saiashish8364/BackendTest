@@ -12,7 +12,9 @@ function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("https://swapi.dev/api/films");
+      const response = await fetch(
+        "https://react-backend-test-1-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json"
+      );
       if (!response.ok) {
         timer = setTimeout(() => {
           fetchData();
@@ -21,16 +23,16 @@ function App() {
       }
       const data = await response.json();
 
-      const movieData = data.results;
-      const transform = movieData.map((obj) => {
-        return {
-          id: obj.episode_id,
-          title: obj.title,
-          openingText: obj.opening_crawl,
-          releaseDate: obj.release_date,
-        };
-      });
-      setMovies(transform);
+      const movieData = [];
+      for (const key in data) {
+        movieData.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate,
+        });
+      }
+      setMovies(movieData);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -54,14 +56,26 @@ function App() {
   function dateChangeHandler(e) {
     date = e.target.value;
   }
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
+
     let newMovieObj = {
       title: title,
       openingText: openingText,
       releaseDate: date,
     };
-    console.log(newMovieObj);
+    const resopnse = await fetch(
+      "https://react-backend-test-1-default-rtdb.asia-southeast1.firebasedatabase.app/movies.json",
+      {
+        method: "POST",
+        body: JSON.stringify(newMovieObj),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const data = await resopnse.json();
+    console.log(data);
     document.getElementById("title").value = "";
     document.getElementById("opening-text").value = "";
     document.getElementById("date").value = "";
